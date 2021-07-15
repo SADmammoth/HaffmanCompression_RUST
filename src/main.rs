@@ -1,6 +1,7 @@
+mod tree;
+
 use std::collections::BinaryHeap;
 use std::collections::HashMap;
-mod tree;
 
 use tree::{Tree, TreeLeaf, TreeNode};
 
@@ -42,20 +43,12 @@ fn create_tree(mut query: BinaryHeap<Tree<char>>) -> Tree<char> {
             saved_right = query.pop().unwrap();
             if query.len() == 1 {
                 saved_left = query.pop().unwrap();
-                query.push(Tree::Node(Box::new(TreeNode {
-                    left: saved_right.clone(),
-                    right: saved_left.clone(),
-                    priority: saved_right.get_priority() + saved_left.get_priority(),
-                })));
+                query.push(Tree::new(saved_left.clone(), saved_right.clone()));
             }
             left_right_flag = false;
         } else {
             saved_left = query.pop().unwrap();
-            query.push(Tree::Node(Box::new(TreeNode {
-                left: saved_right.clone(),
-                right: saved_left.clone(),
-                priority: saved_right.get_priority() + saved_left.get_priority(),
-            })));
+            query.push(Tree::new(saved_left.clone(), saved_right.clone()));
             left_right_flag = true;
         }
     }

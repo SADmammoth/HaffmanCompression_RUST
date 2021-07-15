@@ -22,6 +22,15 @@ pub enum Tree<T> {
 }
 
 impl<T> Tree<T> {
+	pub fn new(left: Tree<T>, right: Tree<T>) -> Tree<T> {
+		let priority = left.get_priority() + right.get_priority();
+		Tree::Node(Box::new(TreeNode {
+			left,
+			right,
+			priority,
+		}))
+	}
+
 	pub fn get_priority(&self) -> u128 {
 		match self {
 			Tree::Node(node) => node.priority,
