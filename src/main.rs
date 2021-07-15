@@ -5,32 +5,9 @@ mod tree;
 use tree::{Tree, TreeLeaf, TreeNode};
 
 fn main() {
-    let mut query = create_priority_queue("FreedommmmeinnFd");
+    let query = create_priority_queue("FreedommmmeinnFd");
     let tree = create_tree(query);
-    postorder(tree, 0, "");
-}
-
-fn postorder(root: Tree<char>, indent: usize, add: &str) {
-    match root {
-        Tree::Node(node) => {
-            print!(
-                "{item:>indent$}\n",
-                item = format!("{}{}", add, node.priority),
-                indent = indent
-            );
-            postorder(node.right, indent + 6, "r: ");
-            postorder(node.left, indent + 6, "l: ");
-        }
-        Tree::Leaf(leaf) => {
-            print!(
-                "{item:>indent$}",
-                item = format!("{}{}", add, leaf.priority),
-                indent = indent
-            );
-            print!("-{}\n", leaf.content);
-        }
-        Tree::None => {}
-    };
+    println!("{}", tree);
 }
 
 fn create_priority_queue(text: &str) -> BinaryHeap<Tree<char>> {
@@ -56,7 +33,7 @@ fn create_priority_queue(text: &str) -> BinaryHeap<Tree<char>> {
 fn create_tree(mut query: BinaryHeap<Tree<char>>) -> Tree<char> {
     let mut left_right_flag = true;
     let mut saved_right: Tree<char> = Tree::None;
-    let mut saved_left: Tree<char> = Tree::None;
+    let mut saved_left: Tree<char>;
     loop {
         if query.len() == 1 {
             break;

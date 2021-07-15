@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::fmt::{self, Display};
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct TreeNode<T> {
@@ -30,6 +31,44 @@ impl<T> Tree<T> {
 	}
 }
 
+impl<T: Display> Tree<T> {
+	pub fn stringify(&self) -> String {
+		let mut string = String::new();
+
+		Tree::stringify_recursion(&mut string, self, 0, "")
+	}
+
+	fn stringify_recursion(
+		string: &mut String,
+		root: &Tree<T>,
+		indent: usize,
+		add: &str,
+	) -> String {
+		match root {
+			Tree::Node(node) => {
+				string.push_str(&format!(
+					"{item:>indent$}\n",
+					item = format!("{}{}", add, node.priority),
+					indent = indent
+				));
+				Tree::stringify_recursion(string, &node.right, indent + 6, "r: ");
+				Tree::stringify_recursion(string, &node.left, indent + 6, "l: ");
+			}
+			Tree::Leaf(leaf) => {
+				string.push_str(&format!(
+					"{item:>indent$}",
+					item = format!("{}{}", add, leaf.priority),
+					indent = indent
+				));
+				string.push_str(&format!("({})\n", leaf.content));
+			}
+			Tree::None => {}
+		};
+
+		string.clone()
+	}
+}
+
 impl<T: Ord> Ord for Tree<T> {
 	fn cmp(&self, other: &Self) -> Ordering {
 		self.get_priority().cmp(&other.get_priority())
@@ -39,5 +78,11 @@ impl<T: Ord> Ord for Tree<T> {
 impl<T: Ord> PartialOrd for Tree<T> {
 	fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
 		Some(other.get_priority().cmp(&self.get_priority()))
+	}
+}
+
+impl<T: Display> Display for Tree<T> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{}", self.stringify())
 	}
 }
