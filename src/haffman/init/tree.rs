@@ -22,13 +22,17 @@ pub enum Tree<T> {
 }
 
 impl<T> Tree<T> {
-	pub fn new(left: Tree<T>, right: Tree<T>) -> Tree<T> {
+	pub fn new_node(left: Tree<T>, right: Tree<T>) -> Tree<T> {
 		let priority = left.get_priority() + right.get_priority();
 		Tree::Node(Box::new(TreeNode {
 			left,
 			right,
 			priority,
 		}))
+	}
+
+	pub fn new_leaf(content: T, priority: u128) -> Tree<T> {
+		Tree::Leaf(Box::new(TreeLeaf { content, priority }))
 	}
 
 	pub fn get_priority(&self) -> u128 {
