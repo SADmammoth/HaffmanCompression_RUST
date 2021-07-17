@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::collections::HashMap;
 use std::fmt::{self, Display};
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -8,7 +9,7 @@ pub struct TreeNode<T> {
 	pub priority: u128,
 }
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 pub struct TreeLeaf<T> {
 	pub content: T,
 	pub priority: u128,
@@ -82,9 +83,46 @@ impl<T: Display> Tree<T> {
 	}
 }
 
+#[derive(Clone, Copy, Debug)]
+pub enum ChildPosition {
+	Left,
+	Right,
+}
+
+impl<T: Clone + Eq + std::hash::Hash> Tree<T> {
+	pub fn deep_first_traversal(&self) -> HashMap<Box<TreeLeaf<T>>, Vec<ChildPosition>> {
+		let path = Vec::<ChildPosition>::new();
+		let mut paths_map = HashMap::<Box<TreeLeaf<T>>, Vec<ChildPosition>>::new();
+		Tree::deep_first_recursion(self, path, &mut paths_map);
+
+		paths_map
+	}
+
+	fn deep_first_recursion(
+		root: &Tree<T>,
+		path: Vec<ChildPosition>,
+		paths_map: &mut HashMap<Box<TreeLeaf<T>>, Vec<ChildPosition>>,
+	) {
+		match root {
+			Tree::Node(node) => {
+				let mut left_path = path.clone();
+				left_path.push(ChildPosition::Left);
+				let mut right_path = path.clone();
+				right_path.push(ChildPosition::Right);
+				Tree::deep_first_recursion(&node.left, left_path, paths_map);
+				Tree::deep_first_recursion(&node.right, right_path, paths_map);
+			}
+			Tree::Leaf(leaf) => {
+				paths_map.insert(leaf.clone(), path);
+			}
+			_ => {}
+		}
+	}
+}
+
 impl<T: Ord> Ord for Tree<T> {
 	fn cmp(&self, other: &Self) -> Ordering {
-		other.get_priority().cmp(&self.get_priority())
+		self.get_priority().cmp(&other.get_priority())
 	}
 }
 

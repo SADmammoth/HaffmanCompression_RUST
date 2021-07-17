@@ -12,4 +12,8 @@ fn main() {
     println!("{}", query);
     let tree = haffman::create_tree(query);
     println!("{}", tree);
+    let alphabet = haffman::create_alphabet(tree);
+    println!("{:?}", alphabet);
+    let encoded = haffman::compress(&message, alphabet);
+    println!("{}", encoded);
 }

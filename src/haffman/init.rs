@@ -48,3 +48,22 @@ pub fn create_tree(query: Query<char>) -> Tree<char> {
 
 	query.pop().unwrap()
 }
+
+pub fn create_alphabet(tree: Tree<char>) -> HashMap<char, String> {
+	let paths = tree.deep_first_traversal();
+	let mut alphabet = HashMap::<char, String>::new();
+
+	for (leaf, path) in paths.iter() {
+		alphabet.insert(
+			leaf.content,
+			path.iter()
+				.map(|direction| match direction {
+					tree::ChildPosition::Left => '0',
+					tree::ChildPosition::Right => '1',
+				})
+				.collect::<String>(),
+		);
+	}
+
+	alphabet
+}
