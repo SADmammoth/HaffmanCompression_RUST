@@ -1,4 +1,5 @@
 mod haffman;
+use haffman::{compress, init};
 use std::io;
 
 fn main() {
@@ -8,12 +9,12 @@ fn main() {
         .read_line(&mut message)
         .expect("Failed to read line");
 
-    let query = haffman::create_priority_queue(message.trim());
+    let query = init::create_priority_queue(message.trim());
     println!("{}", query);
-    let tree = haffman::create_tree(query);
+    let tree = init::create_tree(query);
     println!("{}", tree);
-    let alphabet = haffman::create_alphabet(tree);
+    let alphabet = init::create_alphabet(tree);
     println!("{:?}", alphabet);
-    let encoded = haffman::compress(&message, alphabet);
+    let encoded = compress::compress(&message, alphabet);
     println!("{}", encoded);
 }

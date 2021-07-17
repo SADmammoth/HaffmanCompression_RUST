@@ -1,6 +1,4 @@
-mod tree;
-use tree::Query;
-use tree::Tree;
+use super::tree::{ChildPosition, Query, Tree};
 
 use std::collections::BinaryHeap;
 use std::collections::HashMap;
@@ -58,8 +56,8 @@ pub fn create_alphabet(tree: Tree<char>) -> HashMap<char, String> {
 			leaf.content,
 			path.iter()
 				.map(|direction| match direction {
-					tree::ChildPosition::Left => '0',
-					tree::ChildPosition::Right => '1',
+					ChildPosition::Left => '0',
+					ChildPosition::Right => '1',
 				})
 				.collect::<String>(),
 		);
