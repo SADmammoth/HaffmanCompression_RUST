@@ -84,13 +84,13 @@ impl<T: Display> Tree<T> {
 
 impl<T: Ord> Ord for Tree<T> {
 	fn cmp(&self, other: &Self) -> Ordering {
-		self.get_priority().cmp(&other.get_priority())
+		other.get_priority().cmp(&self.get_priority())
 	}
 }
 
 impl<T: Ord> PartialOrd for Tree<T> {
 	fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-		Some(other.get_priority().cmp(&self.get_priority()))
+		Some(other.cmp(self))
 	}
 }
 
@@ -104,12 +104,17 @@ use std::collections::BinaryHeap;
 
 pub struct Query<T>(pub BinaryHeap<Tree<T>>);
 
-impl<T: Display> Display for Query<T> {
+impl<T: Display + Ord + Clone> Display for Query<T> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(
 			f,
 			"{}",
-			self.0.iter().map(|x| { x.stringify() }).collect::<String>()
+			self.0
+				.clone()
+				.into_sorted_vec()
+				.iter()
+				.map(|x| { x.stringify() })
+				.collect::<String>()
 		)
 	}
 }

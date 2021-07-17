@@ -1,7 +1,14 @@
 mod haffman;
+use std::io;
 
 fn main() {
-    let query = haffman::create_priority_queue("FreedommmmeinnFd");
+    println!("Please, enter message:");
+    let mut message = String::new();
+    io::stdin()
+        .read_line(&mut message)
+        .expect("Failed to read line");
+
+    let query = haffman::create_priority_queue(message.trim());
     println!("{}", query);
     let tree = haffman::create_tree(query);
     println!("{}", tree);
