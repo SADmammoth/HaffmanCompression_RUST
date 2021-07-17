@@ -99,3 +99,17 @@ impl<T: Display> Display for Tree<T> {
 		write!(f, "{}", self.stringify())
 	}
 }
+
+use std::collections::BinaryHeap;
+
+pub struct Query<T>(pub BinaryHeap<Tree<T>>);
+
+impl<T: Display> Display for Query<T> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(
+			f,
+			"{}",
+			self.0.iter().map(|x| { x.stringify() }).collect::<String>()
+		)
+	}
+}

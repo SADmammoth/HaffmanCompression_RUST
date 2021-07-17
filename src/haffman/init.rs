@@ -1,10 +1,11 @@
 mod tree;
+use tree::Query;
 use tree::Tree;
 
 use std::collections::BinaryHeap;
 use std::collections::HashMap;
 
-pub fn create_priority_queue(text: &str) -> BinaryHeap<Tree<char>> {
+pub fn create_priority_queue(text: &str) -> Query<char> {
 	let mut map = HashMap::new();
 
 	for word in text.chars() {
@@ -18,10 +19,11 @@ pub fn create_priority_queue(text: &str) -> BinaryHeap<Tree<char>> {
 		query.push(Tree::new_leaf(symbol, count));
 	}
 
-	query
+	Query(query)
 }
 
-pub fn create_tree(mut query: BinaryHeap<Tree<char>>) -> Tree<char> {
+pub fn create_tree(query: Query<char>) -> Tree<char> {
+	let mut query: BinaryHeap<Tree<char>> = query.0;
 	let mut should_pick_right = true;
 	let mut right: Tree<char> = Tree::None;
 	let mut left: Tree<char>;
