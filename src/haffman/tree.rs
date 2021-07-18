@@ -22,6 +22,7 @@ pub enum Tree<T> {
 	None,
 }
 
+//* Constructors and getters
 impl<T: Copy> Tree<T> {
 	pub fn new_node(left: Tree<T>, right: Tree<T>) -> Tree<T> {
 		let priority = left.get_priority() + right.get_priority();
@@ -53,6 +54,7 @@ impl<T: Copy> Tree<T> {
 	}
 }
 
+//* Display
 impl<T: Display> Tree<T> {
 	pub fn stringify(&self) -> String {
 		let mut string = String::new();
@@ -91,6 +93,13 @@ impl<T: Display> Tree<T> {
 	}
 }
 
+impl<T: Display> Display for Tree<T> {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		write!(f, "{}", self.stringify())
+	}
+}
+
+//* Traversal
 #[derive(Clone, Copy, Debug)]
 pub enum ChildPosition {
 	Left,
@@ -128,6 +137,7 @@ impl<T: Clone + Eq + std::hash::Hash> Tree<T> {
 	}
 }
 
+//* For BinaryHeap compatibility
 impl<T: Ord + Copy> Ord for Tree<T> {
 	fn cmp(&self, other: &Self) -> Ordering {
 		self.get_priority()
@@ -139,30 +149,5 @@ impl<T: Ord + Copy> Ord for Tree<T> {
 impl<T: Ord + Copy> PartialOrd for Tree<T> {
 	fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
 		Some(other.cmp(self))
-	}
-}
-
-impl<T: Display> Display for Tree<T> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", self.stringify())
-	}
-}
-
-use std::collections::BinaryHeap;
-
-pub struct Query<T>(pub BinaryHeap<Tree<T>>);
-
-impl<T: Display + Ord + Clone + Copy> Display for Query<T> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(
-			f,
-			"{}",
-			self.0
-				.clone()
-				.into_sorted_vec()
-				.iter()
-				.map(|x| { x.stringify() })
-				.collect::<String>()
-		)
 	}
 }

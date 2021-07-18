@@ -1,10 +1,11 @@
 use super::alphabet::Alphabet;
-use super::tree::{ChildPosition, Query, Tree};
+use super::query::Query;
+use super::tree::{ChildPosition, Tree};
 
 use std::collections::BinaryHeap;
 use std::collections::HashMap;
 
-pub fn create_priority_queue(text: &str) -> Query<char> {
+fn create_priority_queue(text: &str) -> Query<char> {
 	let mut map = HashMap::new();
 
 	for word in text.chars() {
@@ -21,7 +22,7 @@ pub fn create_priority_queue(text: &str) -> Query<char> {
 	Query(query)
 }
 
-pub fn create_tree(query: Query<char>) -> Tree<char> {
+fn create_tree(query: Query<char>) -> Tree<char> {
 	let mut query: BinaryHeap<Tree<char>> = query.0;
 	let mut should_pick_right = true;
 	let mut right: Tree<char> = Tree::None;
@@ -48,7 +49,7 @@ pub fn create_tree(query: Query<char>) -> Tree<char> {
 	query.pop().unwrap()
 }
 
-pub fn create_alphabet(tree: Tree<char>) -> Alphabet {
+fn create_alphabet(tree: Tree<char>) -> Alphabet {
 	let paths = tree.deep_first_traversal();
 	let mut alphabet = HashMap::<char, String>::new();
 
@@ -65,4 +66,12 @@ pub fn create_alphabet(tree: Tree<char>) -> Alphabet {
 	}
 
 	Alphabet::new(alphabet)
+}
+
+pub fn init(message: &str) -> Alphabet {
+	let query = create_priority_queue(message);
+	let tree = create_tree(query);
+	let alphabet = create_alphabet(tree);
+
+	alphabet
 }

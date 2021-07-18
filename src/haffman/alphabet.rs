@@ -5,6 +5,16 @@ use std::collections::HashMap;
 #[derive(Debug)]
 pub struct Alphabet(pub HashMap<char, String>);
 
+impl Clone for Alphabet {
+	fn clone(&self) -> Self {
+		Alphabet(self.0.clone())
+	}
+
+	fn clone_from(&mut self, other: &Self) {
+		self.0 = other.0.clone();
+	}
+}
+
 impl Alphabet {
 	pub fn new(map: HashMap<char, String>) -> Alphabet {
 		if map.len() >= 2usize.pow(32u32) {
