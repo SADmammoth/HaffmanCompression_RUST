@@ -22,7 +22,7 @@ pub enum Tree<T> {
 	None,
 }
 
-impl<T> Tree<T> {
+impl<T: Copy> Tree<T> {
 	pub fn new_node(left: Tree<T>, right: Tree<T>) -> Tree<T> {
 		let priority = left.get_priority() + right.get_priority();
 		Tree::Node(Box::new(TreeNode {
@@ -41,6 +41,14 @@ impl<T> Tree<T> {
 			Tree::Node(node) => node.priority,
 			Tree::Leaf(leaf) => leaf.priority,
 			Tree::None => 0,
+		}
+	}
+
+	pub fn get_content(&self) -> Option<T> {
+		match self {
+			Tree::Node(_) => None,
+			Tree::Leaf(leaf) => Some(leaf.content),
+			Tree::None => None,
 		}
 	}
 }
@@ -120,13 +128,15 @@ impl<T: Clone + Eq + std::hash::Hash> Tree<T> {
 	}
 }
 
-impl<T: Ord> Ord for Tree<T> {
+impl<T: Ord + Copy> Ord for Tree<T> {
 	fn cmp(&self, other: &Self) -> Ordering {
-		self.get_priority().cmp(&other.get_priority())
+		self.get_priority()
+			.cmp(&other.get_priority())
+			.then_with(|| self.get_content().cmp(&other.get_content()))
 	}
 }
 
-impl<T: Ord> PartialOrd for Tree<T> {
+impl<T: Ord + Copy> PartialOrd for Tree<T> {
 	fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
 		Some(other.cmp(self))
 	}
@@ -142,7 +152,7 @@ use std::collections::BinaryHeap;
 
 pub struct Query<T>(pub BinaryHeap<Tree<T>>);
 
-impl<T: Display + Ord + Clone> Display for Query<T> {
+impl<T: Display + Ord + Clone + Copy> Display for Query<T> {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		write!(
 			f,
