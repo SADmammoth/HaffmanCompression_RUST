@@ -1,6 +1,7 @@
 use super::helpers::char_to_bin;
 use super::helpers::pad;
 use std::collections::HashMap;
+use std::fmt::{Display, Formatter, Result};
 
 #[derive(Debug)]
 pub struct Alphabet(pub HashMap<char, String>);
@@ -55,18 +56,6 @@ impl Alphabet {
 	}
 
 	pub fn encode_info(&self) -> String {
-		println!(
-			"{:?}",
-			(
-				&pad(&format!("{:b}", self.get_max_char_length()), 6, '0'),
-				&pad(
-					&format!("{:b}", self.get_max_code_length() + 1),
-					format!("{:b}", self.0.len()).len(),
-					'0',
-				),
-				&self.stringify()
-			)
-		);
 		pad(&format!("{:b}", self.0.len()), 32, '0')
 			+ &pad(&format!("{:b}", self.get_max_char_length()), 6, '0')
 			+ &pad(
@@ -74,5 +63,19 @@ impl Alphabet {
 				format!("{:b}", self.0.len()).len(),
 				'0',
 			) + &self.stringify()
+	}
+}
+
+impl Display for Alphabet {
+	fn fmt(&self, f: &mut Formatter) -> Result {
+		write!(
+			f,
+			"{}",
+			self.0
+				.clone()
+				.iter()
+				.map(|(key, value)| { format!("({}, {}); ", key, value) })
+				.collect::<String>()
+		)
 	}
 }
