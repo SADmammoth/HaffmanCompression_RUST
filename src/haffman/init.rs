@@ -1,3 +1,4 @@
+use super::alphabet::Alphabet;
 use super::tree::{ChildPosition, Query, Tree};
 
 use std::collections::BinaryHeap;
@@ -47,7 +48,7 @@ pub fn create_tree(query: Query<char>) -> Tree<char> {
 	query.pop().unwrap()
 }
 
-pub fn create_alphabet(tree: Tree<char>) -> HashMap<char, String> {
+pub fn create_alphabet(tree: Tree<char>) -> Alphabet {
 	let paths = tree.deep_first_traversal();
 	let mut alphabet = HashMap::<char, String>::new();
 
@@ -63,5 +64,5 @@ pub fn create_alphabet(tree: Tree<char>) -> HashMap<char, String> {
 		);
 	}
 
-	alphabet
+	Alphabet::new(alphabet)
 }

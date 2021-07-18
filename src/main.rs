@@ -15,6 +15,7 @@ fn main() {
     println!("{}", tree);
     let alphabet = init::create_alphabet(tree);
     println!("{:?}", alphabet);
-    let encoded = compress::compress(&message, alphabet);
+    let encoded = compress::compress(&message, &alphabet);
     println!("{}", encoded);
+    println!("{}", alphabet.encode_info() + &encoded);
 }

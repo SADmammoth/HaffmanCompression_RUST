@@ -1,11 +1,10 @@
-use std::collections::HashMap;
+use super::alphabet::Alphabet;
 
-pub fn compress(message: &str, alphabet: HashMap<char, String>) -> String {
+pub fn compress(message: &str, alphabet: &Alphabet) -> String {
 	let mut encoded = String::new();
 	let mut encoded_letter: Option<&String>;
 	for symbol in message.chars() {
-		println!("{:?}", (symbol, &alphabet));
-		encoded_letter = alphabet.get(&symbol);
+		encoded_letter = alphabet.0.get(&symbol);
 		match encoded_letter {
 			Some(letter) => encoded.push_str(letter),
 			None => encoded.push(symbol),
