@@ -56,13 +56,17 @@ impl Alphabet {
 	}
 
 	pub fn encode_info(&self) -> String {
-		pad(&format!("{:b}", self.0.len()), 32, '0')
-			+ &pad(&format!("{:b}", self.get_max_char_length()), 6, '0')
-			+ &pad(
+		format!(
+			"{}{}{}{}",
+			pad(&format!("{:b}", self.0.len()), 32, '0'),
+			pad(&format!("{:b}", self.get_max_char_length()), 6, '0'),
+			pad(
 				&format!("{:b}", self.get_max_code_length() + 1),
 				format!("{:b}", self.0.len()).len(),
 				'0',
-			) + &self.stringify()
+			),
+			self.stringify()
+		)
 	}
 }
 

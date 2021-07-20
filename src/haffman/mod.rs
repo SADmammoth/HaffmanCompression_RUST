@@ -53,7 +53,7 @@ impl HaffmanCompression {
 
 impl CompressionResult {
 	pub fn get_with_injected_alphabet(&self) -> String {
-		self.alphabet.encode_info() + &self.encoded
+		format!("{}{}", self.alphabet.encode_info(), self.encoded)
 	}
 
 	pub fn get_encoded(&self) -> String {

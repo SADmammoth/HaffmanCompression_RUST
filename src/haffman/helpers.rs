@@ -1,11 +1,11 @@
-pub fn pad(string: &String, len: usize, symbol: char) -> String {
+pub fn pad(string: &str, len: usize, symbol: char) -> String {
 	if len <= string.len() {
-		string.clone()
+		string.to_string()
 	} else {
-		std::iter::repeat(symbol)
+		let spaces = std::iter::repeat(symbol)
 			.take(len - string.len())
-			.collect::<String>()
-			+ string
+			.collect::<String>();
+		format!("{}{}", spaces, string)
 	}
 }
 

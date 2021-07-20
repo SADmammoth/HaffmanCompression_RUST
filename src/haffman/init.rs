@@ -71,7 +71,6 @@ fn create_alphabet(tree: Tree<char>) -> Alphabet {
 pub fn init(message: &str) -> Alphabet {
 	let query = create_priority_queue(message);
 	let tree = create_tree(query);
-	let alphabet = create_alphabet(tree);
 
-	alphabet
+	create_alphabet(tree)
 }
