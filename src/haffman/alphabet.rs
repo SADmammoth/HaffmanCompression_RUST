@@ -26,12 +26,20 @@ impl Alphabet {
 	}
 
 	pub fn stringify(&self) -> String {
+		if self.0.is_empty() {
+			return String::from("[empty alphabet]");
+		}
+
 		let max_char_length = self.get_max_char_length();
 		let max_code_length = self.get_max_code_length();
+
 		self.0.iter().fold(String::new(), |string, (key, code)| {
-			string
-				+ &pad(&char_to_bin(*key), max_char_length, '0')
-				+ &pad(&(code.to_string() + &code), max_code_length + 1, '0')
+			format!(
+				"{}{}{}",
+				string,
+				pad(&char_to_bin(*key), max_char_length, '0'),
+				pad(&(code.to_string() + &code), max_code_length + 1, '0')
+			)
 		})
 	}
 
@@ -76,7 +84,6 @@ impl Display for Alphabet {
 			f,
 			"{}",
 			self.0
-				.clone()
 				.iter()
 				.map(|(key, value)| { format!("({}, {}); ", key, value) })
 				.collect::<String>()

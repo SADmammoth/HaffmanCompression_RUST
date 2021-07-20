@@ -56,11 +56,11 @@ impl CompressionResult {
 		format!("{}{}", self.alphabet.encode_info(), self.encoded)
 	}
 
-	pub fn get_encoded(&self) -> String {
-		self.encoded.clone()
+	pub fn get_encoded(&self) -> &str {
+		&self.encoded
 	}
 
-	pub fn get_alphabet(&self) -> Alphabet {
-		self.alphabet.clone()
+	pub fn get_alphabet(&self) -> &Alphabet {
+		&self.alphabet
 	}
 }

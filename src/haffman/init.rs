@@ -36,12 +36,13 @@ fn create_tree(query: Query<char>) -> Tree<char> {
 			right = query.pop().unwrap();
 			if query.len() == 1 {
 				left = query.pop().unwrap();
-				query.push(Tree::new_node(left.clone(), right.clone()));
+				query.push(Tree::new_node(left, right.clone()));
+				break;
 			}
 			should_pick_right = false;
 		} else {
 			left = query.pop().unwrap();
-			query.push(Tree::new_node(left.clone(), right.clone()));
+			query.push(Tree::new_node(left, right.clone()));
 			should_pick_right = true;
 		}
 	}

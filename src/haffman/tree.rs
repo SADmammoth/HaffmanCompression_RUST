@@ -59,15 +59,15 @@ impl<T: Display> Tree<T> {
 	pub fn stringify(&self) -> String {
 		let mut string = String::new();
 
-		Tree::stringify_recursion(&mut string, self, 0, "")
+		Tree::stringify_recursion(&mut string, self, 0, "").clone()
 	}
 
-	fn stringify_recursion(
-		string: &mut String,
+	fn stringify_recursion<'a>(
+		string: &'a mut String,
 		root: &Tree<T>,
 		indent: usize,
 		add: &str,
-	) -> String {
+	) -> &'a String {
 		match root {
 			Tree::Node(node) => {
 				string.push_str(&format!(
@@ -89,7 +89,7 @@ impl<T: Display> Tree<T> {
 			Tree::None => {}
 		};
 
-		string.clone()
+		string
 	}
 }
 
@@ -132,7 +132,9 @@ impl<T: Clone + Eq + std::hash::Hash> Tree<T> {
 			Tree::Leaf(leaf) => {
 				paths_map.insert(leaf.clone(), path);
 			}
-			_ => {}
+			Tree::None => {
+				//Proceed
+			}
 		}
 	}
 }
