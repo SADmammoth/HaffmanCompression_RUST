@@ -41,9 +41,9 @@ impl Display for AnalyzeResult {
 		Original size (b): {},\n
 		Alphabet length (pairs): {},\n
 		Compressed size (b): {},\n
-		Compressed size (with aplphabet, b): {},\n
+		Compressed size (with alphabet, b): {},\n
 		Compression percent: {},\n
-		Compression percent (with aplphabet): {},\n
+		Compression percent (with alphabet): {},\n
 		Compression time (ms): {}\n
 		", 
 		self.input_chars_count,
