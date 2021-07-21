@@ -1,4 +1,5 @@
 use super::helpers::char_to_bin;
+use super::helpers::num_to_bin;
 use super::helpers::pad;
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result};
@@ -25,20 +26,24 @@ impl Alphabet {
         }
     }
 
-    pub fn len(&self) -> usize {
-        self.0.len()
+    fn get_map(&self) -> &HashMap<char, String> {
+        &self.0
     }
 
-    pub fn stringify(&self) -> String {
-        if self.0.is_empty() {
+    pub fn len(&self) -> usize {
+        self.get_map().len()
+    }
+
+    fn stringify(&self) -> String {
+        if self.get_map().is_empty() {
             return String::from("[empty alphabet]");
         }
 
         let max_char_length = self.get_max_char_length();
         let max_code_length = self.get_max_code_length();
 
-        let mut sorted_alphabet = self.0.clone().into_iter().collect::<Vec<_>>();
-        sorted_alphabet.sort_by(|x, y| x.0.cmp(&y.0));
+        let mut sorted_alphabet = self.get_map().clone().into_iter().collect::<Vec<_>>();
+        sorted_alphabet.sort_by(|(a_key, _), (b_key, _)| a_key.cmp(&b_key));
 
         sorted_alphabet
             .iter()
@@ -46,40 +51,42 @@ impl Alphabet {
                 format!(
                     "{}{}{}",
                     string,
-                    pad(&char_to_bin(*key), max_char_length, '0'),
+                    pad(&char_to_bin(key), max_char_length, '0'),
                     pad(&(code.to_string() + &code), max_code_length + 1, '0')
                 )
             })
     }
 
     pub fn get_max_char_length(&self) -> usize {
-        let character = self
-            .0
+        let (character, _) = self
+            .get_map()
             .iter()
-            .max_by(|a, b| char_to_bin(*a.0).len().cmp(&char_to_bin(*b.0).len()))
-            .unwrap()
-            .0;
+            .max_by(|(a_key, _), (b_key, _)| {
+                char_to_bin(a_key).len().cmp(&char_to_bin(b_key).len())
+            })
+            .unwrap();
 
-        char_to_bin(*character).to_string().len()
+        char_to_bin(character).to_string().len()
     }
+
     pub fn get_max_code_length(&self) -> usize {
-        self.0
+        let (_, code) = self
+            .get_map()
             .iter()
-            .max_by(|a, b| a.1.len().cmp(&b.1.len()))
-            .unwrap()
-            .1
-            .to_string()
-            .len()
+            .max_by(|(_, a_code), (_, b_code)| a_code.len().cmp(&b_code.len()))
+            .unwrap();
+
+        code.to_string().len()
     }
 
     pub fn encode_info(&self) -> String {
         format!(
             "{}{}{}{}",
-            pad(&format!("{:b}", self.0.len()), 8, '0'),
-            pad(&format!("{:b}", self.get_max_char_length()), 6, '0'),
+            pad(&num_to_bin(self.len()), 8, '0'),
+            pad(&num_to_bin(self.get_max_char_length()), 6, '0'),
             pad(
-                &format!("{:b}", self.get_max_code_length() + 1),
-                format!("{:b}", self.0.len()).len(),
+                &num_to_bin(self.get_max_code_length() + 1),
+                num_to_bin(self.len()).len(),
                 '0',
             ),
             self.stringify()
@@ -92,7 +99,7 @@ impl Display for Alphabet {
         write!(
             f,
             "{}",
-            self.0
+            self.get_map()
                 .iter()
                 .map(|(key, value)| { format!("({}, {}); ", key, value) })
                 .collect::<String>()
