@@ -20,3 +20,7 @@ pub fn char_to_bin(character: char) -> String {
 
 	string
 }
+
+pub fn text_to_bin(text: &str) -> String {
+	text.bytes().fold(String::new(), |string, x| {string + &format!("{:b}", x)}, )
+}

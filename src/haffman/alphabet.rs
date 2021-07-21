@@ -25,6 +25,8 @@ impl Alphabet {
 		}
 	}
 
+	pub fn len(&self) -> usize {self.0.len()}
+
 	pub fn stringify(&self) -> String {
 		if self.0.is_empty() {
 			return String::from("[empty alphabet]");
@@ -66,7 +68,7 @@ impl Alphabet {
 	pub fn encode_info(&self) -> String {
 		format!(
 			"{}{}{}{}",
-			pad(&format!("{:b}", self.0.len()), 32, '0'),
+			pad(&format!("{:b}", self.0.len()), 8, '0'),
 			pad(&format!("{:b}", self.get_max_char_length()), 6, '0'),
 			pad(
 				&format!("{:b}", self.get_max_code_length() + 1),

@@ -7,11 +7,14 @@ pub mod tree;
 use alphabet::Alphabet;
 use compression::compress;
 
+use self::compression::{AnalyzeResult, analyze};
+
 pub struct HaffmanCompression {
 	alphabet: Option<Alphabet>,
 }
 
-pub struct CompressionResult {
+pub struct CompressionResult<'a> {
+	message: &'a str,
 	encoded: String,
 	alphabet: Alphabet,
 }
@@ -31,7 +34,7 @@ impl HaffmanCompression {
 		self
 	}
 
-	pub fn compress(&self, message: &str) -> CompressionResult {
+	pub fn compress<'a>(&self, message: &'a str) -> CompressionResult<'a> {
 		let alphabet_for_compression: Alphabet;
 		match &self.alphabet {
 			Some(alphabet) => {
@@ -45,13 +48,14 @@ impl HaffmanCompression {
 		let encoded = compress(message, &alphabet_for_compression);
 
 		CompressionResult {
+			message,
 			encoded,
 			alphabet: alphabet_for_compression,
 		}
 	}
 }
 
-impl CompressionResult {
+impl<'a> CompressionResult<'a> {
 	pub fn get_with_injected_alphabet(&self) -> String {
 		format!("{}{}", self.alphabet.encode_info(), self.encoded)
 	}
@@ -62,5 +66,9 @@ impl CompressionResult {
 
 	pub fn get_alphabet(&self) -> &Alphabet {
 		&self.alphabet
+	}
+
+	pub fn analyze(&self) -> AnalyzeResult {
+		analyze(self.message, &self.encoded, &self.alphabet)
 	}
 }
