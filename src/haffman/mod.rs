@@ -28,11 +28,13 @@ impl HaffmanCompression {
         HaffmanCompression { alphabet: None }
     }
 
+    #[allow(dead_code)] // TEMP
     pub fn with_alphabet(&mut self, alphabet: Alphabet) -> &HaffmanCompression {
         self.alphabet = Some(alphabet);
         self
     }
 
+    #[allow(dead_code)] // TEMP
     pub fn generate_alphabet_with_message(&mut self, message: &str) -> &HaffmanCompression {
         self.alphabet = Some(init::init(message));
         self
@@ -121,10 +123,12 @@ impl<'a> CompressionResult<'a> {
         format!("{}{}", self.alphabet.encode_info(), self.encoded)
     }
 
+    #[allow(dead_code)] // TEMP
     pub fn get_encoded(&self) -> &str {
         &self.encoded
     }
 
+    #[allow(dead_code)] // TEMP
     pub fn get_alphabet(&self) -> &Alphabet {
         &self.alphabet
     }
