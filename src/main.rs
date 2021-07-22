@@ -8,6 +8,6 @@ fn main() {
     // println!("{}", encoded.get_encoded());
     // println!("{}", encoded.get_with_injected_alphabet());
     println!("{}", encoded.analyze());
-    
+
     io_adapter::write(encoded.get_with_injected_alphabet()).unwrap();
 }

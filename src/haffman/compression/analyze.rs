@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use super::{alphabet::Alphabet, helpers::text_to_bin};
+use super::super::{alphabet::Alphabet, helpers::text_to_bin};
 
 pub struct AnalyzeResult {
     input_chars_count: usize,
@@ -45,16 +45,20 @@ pub fn analyze(
     alphabet: &Alphabet,
     compression_time: u128,
 ) -> AnalyzeResult {
-    let compressed_with_alphabet = alphabet.encode_info() + compressed;
+    let mut compressed_with_alphabet = (alphabet.encode_info() + compressed).len();
     let original_size = text_to_bin(message).len();
+
+    if original_size < compressed_with_alphabet {
+        compressed_with_alphabet = original_size;
+    }
     AnalyzeResult {
         input_chars_count: message.len(),
         original_size,
         alphabet_length: alphabet.len(),
         compressed_size: compressed.len(),
-        compressed_with_alphabet: compressed_with_alphabet.len(),
+        compressed_with_alphabet,
         compression_percent: (original_size - compressed.len()) as f32 / original_size as f32,
-        compression_percent_with_alphabet: (original_size - compressed_with_alphabet.len()) as f32
+        compression_percent_with_alphabet: (original_size - compressed_with_alphabet) as f32
             / original_size as f32,
         compression_time,
     }

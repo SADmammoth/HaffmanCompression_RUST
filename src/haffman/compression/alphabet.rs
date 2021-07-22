@@ -1,10 +1,10 @@
-use super::helpers::char_to_bin;
-use super::helpers::num_to_bin;
-use super::helpers::pad;
+use super::super::helpers::char_to_bin;
+use super::super::helpers::num_to_bin;
+use super::super::helpers::pad;
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Alphabet(pub HashMap<char, String>);
 
 impl Clone for Alphabet {
@@ -96,10 +96,13 @@ impl Alphabet {
 
 impl Display for Alphabet {
     fn fmt(&self, f: &mut Formatter) -> Result {
+        let mut sorted_alphabet = self.get_map().clone().into_iter().collect::<Vec<_>>();
+        sorted_alphabet.sort_by(|(a_key, _), (b_key, _)| a_key.cmp(&b_key));
+
         write!(
             f,
             "{}",
-            self.get_map()
+            sorted_alphabet
                 .iter()
                 .map(|(key, value)| { format!("({}, {}); ", key, value) })
                 .collect::<String>()
