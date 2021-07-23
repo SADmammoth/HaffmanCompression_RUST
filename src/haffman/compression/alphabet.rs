@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result};
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct Alphabet(pub HashMap<char, String>);
+pub struct Alphabet(HashMap<char, String>);
 
 impl Clone for Alphabet {
     fn clone(&self) -> Self {
@@ -26,7 +26,7 @@ impl Alphabet {
         }
     }
 
-    fn get_map(&self) -> &HashMap<char, String> {
+    pub fn get_map(&self) -> &HashMap<char, String> {
         &self.0
     }
 

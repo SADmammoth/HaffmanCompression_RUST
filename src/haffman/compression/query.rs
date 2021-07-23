@@ -1,7 +1,7 @@
 use super::super::tree::Tree;
 use std::collections::BinaryHeap;
 use std::fmt::{Display, Formatter, Result};
-
+#[derive(Debug, Clone)]
 pub struct Query<T>(pub BinaryHeap<Tree<T>>);
 
 impl<T: Display + Ord + Clone + Copy> Display for Query<T> {

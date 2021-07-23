@@ -75,3 +75,66 @@ pub fn init(message: &str) -> Alphabet {
 
     create_alphabet(tree)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    pub fn query_is_consistent() {
+        let text = "Haffman compression";
+        let result = create_priority_queue(text);
+
+        for _ in 0..1000 {
+            assert_eq!(result.to_string(), create_priority_queue(text).to_string());
+        }
+    }
+
+    #[test]
+    pub fn tree_is_consistent() {
+        let text = "Haffman compression";
+        let query = create_priority_queue(text);
+        let result = create_tree(query.clone());
+
+        for _ in 0..1000 {
+            assert_eq!(result.to_string(), create_tree(query.clone()).to_string());
+        }
+    }
+
+    #[test]
+    pub fn alphabet_is_consistent() {
+        let text = "Haffman compression";
+        let query = create_priority_queue(text);
+        let tree = create_tree(query);
+        let result = create_alphabet(tree.clone());
+        println!("{}", result.to_string());
+        for _ in 0..1000 {
+            assert_eq!(
+                result.to_string(),
+                create_alphabet(tree.clone()).to_string()
+            );
+        }
+    }
+
+    #[test]
+    pub fn alphabet_has_all_letters() {
+        let text = "Haffman compression";
+        let alphabet = init(text);
+        for symbol in text.chars() {
+            assert!(alphabet.get_map().contains_key(&symbol));
+        }
+    }
+
+    #[test]
+    pub fn alphabet_has_no_odd_letters() {
+        let text = "Haffman compression";
+        let alphabet = init(text);
+        let mut alphabet_map = alphabet.get_map().clone();
+
+        for symbol in text.chars() {
+            alphabet_map.remove(&symbol);
+        }
+
+        assert_eq!(alphabet_map.len(), 0)
+    }
+}
