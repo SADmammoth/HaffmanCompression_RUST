@@ -15,7 +15,10 @@ fn create_priority_queue(text: &str) -> Query<char> {
 
     let mut query = BinaryHeap::<Tree<char>>::with_capacity(map.len());
 
-    for (symbol, count) in map {
+    let mut sorted_map = map.clone().into_iter().collect::<Vec<_>>();
+    sorted_map.sort_by(|(a_key, _), (b_key, _)| a_key.cmp(&b_key));
+
+    for (symbol, count) in sorted_map {
         query.push(Tree::new_leaf(symbol, count));
     }
 
@@ -107,7 +110,7 @@ mod tests {
         let query = create_priority_queue(text);
         let tree = create_tree(query);
         let result = create_alphabet(tree.clone());
-        println!("{}", result.to_string());
+
         for _ in 0..1000 {
             assert_eq!(
                 result.to_string(),
@@ -117,9 +120,20 @@ mod tests {
     }
 
     #[test]
+    pub fn init_is_consistent() {
+        let text = "Haffman compression";
+        let result = init(text);
+
+        for _ in 0..1000 {
+            assert_eq!(result.to_string(), init(text).to_string());
+        }
+    }
+
+    #[test]
     pub fn alphabet_has_all_letters() {
         let text = "Haffman compression";
         let alphabet = init(text);
+
         for symbol in text.chars() {
             assert!(alphabet.get_map().contains_key(&symbol));
         }

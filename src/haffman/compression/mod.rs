@@ -119,14 +119,14 @@ mod tests {
 
     #[test]
     pub fn compression_is_consistent() {
-        let mut result = compress();
+        let result = compress();
 
         let alphabet = result.get_alphabet().to_string();
-        let compresed = result.get_encoded().to_string();
+        let compresed = result.get_encoded();
         let compressed_with_alphabet = result.get_with_injected_alphabet();
 
         for _ in 0..1000 {
-            result = compress();
+            let result = compress();
             assert_eq!(
                 alphabet,
                 result.get_alphabet().to_string(),
@@ -134,7 +134,7 @@ mod tests {
             );
             assert_eq!(
                 compresed,
-                result.get_encoded().to_string(),
+                result.get_encoded(),
                 "Compressed message is not consistent"
             );
             assert_eq!(
