@@ -1,6 +1,8 @@
 use super::super::helpers::char_to_bin;
 use super::super::helpers::num_to_bin;
 use super::super::helpers::pad;
+use crate::haffman::helpers::MAX_ALPHABET_LENGTH_DIGITS;
+use crate::haffman::helpers::MAX_CHAR_LENGTH_DIGITS;
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result};
 
@@ -52,7 +54,7 @@ impl Alphabet {
                     "{}{}{}",
                     string,
                     pad(&char_to_bin(key), max_char_length, '0'),
-                    pad(&(code.to_string() + &code), max_code_length + 1, '0')
+                    pad(&format!("1{}", code), max_code_length + 1, '0')
                 )
             })
     }
@@ -82,8 +84,12 @@ impl Alphabet {
     pub fn encode_info(&self) -> String {
         format!(
             "{}{}{}{}",
-            pad(&num_to_bin(self.len()), 8, '0'),
-            pad(&num_to_bin(self.get_max_char_length()), 6, '0'),
+            pad(&num_to_bin(self.len()), MAX_ALPHABET_LENGTH_DIGITS, '0'),
+            pad(
+                &num_to_bin(self.get_max_char_length()),
+                MAX_CHAR_LENGTH_DIGITS,
+                '0'
+            ),
             pad(
                 &num_to_bin(self.get_max_code_length() + 1),
                 num_to_bin(self.len()).len(),
