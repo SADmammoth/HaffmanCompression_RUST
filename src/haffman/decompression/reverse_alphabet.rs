@@ -27,6 +27,16 @@ impl ReverseAlphabet {
         }
     }
 
+    pub fn from_alphabet(alphabet: Alphabet) -> ReverseAlphabet {
+        let map: HashMap<String, char> = alphabet
+            .get_map()
+            .iter()
+            .map(|(key, value)| (value.clone(), key.clone()))
+            .collect();
+
+        ReverseAlphabet::new(map)
+    }
+
     pub fn get_map(&self) -> &HashMap<String, char> {
         &self.0
     }

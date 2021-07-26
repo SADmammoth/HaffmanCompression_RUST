@@ -1,35 +1,88 @@
-use self::{decompression::decompress, reverse_alphabet::ReverseAlphabet};
+use std::time::Instant;
+
+use self::{
+    analyze::{analyze, AnalyzeResult},
+    decompression::decompress,
+    reverse_alphabet::ReverseAlphabet,
+};
 
 use super::alphabet::Alphabet;
 
+mod analyze;
 mod decompression;
 mod reverse_alphabet;
 
 pub struct HaffmanDecompression {
-    // TODO Stor alphabet
+    alphabet: Option<ReverseAlphabet>,
 }
 
 pub struct DecompressionResult {
     message: String,
     decoded: String,
     alphabet: Alphabet,
-    // TODO Impl
+    decompression_time: u128,
 }
 
 impl HaffmanDecompression {
     pub fn new() -> HaffmanDecompression {
-        HaffmanDecompression {}
+        HaffmanDecompression { alphabet: None }
+    }
+
+    #[allow(dead_code)] // TEMP
+    pub fn with_alphabet(&mut self, alphabet: Alphabet) -> &HaffmanDecompression {
+        self.alphabet = Some(ReverseAlphabet::from_alphabet(alphabet));
+        self
     }
 
     pub fn decompress(&self, encoded: &str) -> DecompressionResult {
-        let (alphabet, message) = ReverseAlphabet::decode_from_binary(encoded.to_string());
-        let decoded = decompress(&message, &alphabet);
+        let timer: Instant = Instant::now();
+        let alphabet_for_compression: ReverseAlphabet;
+        let message: String;
+
+        match &self.alphabet {
+            Some(alphabet) => {
+                alphabet_for_compression = alphabet.clone();
+                message = encoded.to_string();
+            }
+            None => {
+                let (alphabet, encoded_message) =
+                    ReverseAlphabet::decode_from_binary(encoded.to_string());
+                message = encoded_message;
+                alphabet_for_compression = alphabet;
+            }
+        };
+
+        let decoded: String = decompress(&message, &alphabet_for_compression);
+
+        let decompression_time = timer.elapsed().as_millis();
 
         DecompressionResult {
             message,
             decoded,
-            alphabet: alphabet.convert_to_alphabet(),
+            alphabet: alphabet_for_compression.convert_to_alphabet(),
+            decompression_time,
         }
+    }
+}
+
+impl DecompressionResult {
+    #[allow(dead_code)] // TEMP
+    pub fn get_decoded(&self) -> String {
+        self.decoded.clone()
+    }
+
+    #[allow(dead_code)] // TEMP
+    pub fn get_encoded_message(&self) -> String {
+        self.message.clone()
+    }
+
+    #[allow(dead_code)] // TEMP
+    pub fn get_alphabet(&self) -> &Alphabet {
+        &self.alphabet
+    }
+
+    pub fn analyze(&self) -> AnalyzeResult {
+        analyze(self.decompression_time)
     }
 }
 
