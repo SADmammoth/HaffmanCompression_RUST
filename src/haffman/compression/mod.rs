@@ -90,6 +90,8 @@ impl<'a> CompressionResult<'a> {
 
 #[cfg(test)]
 mod tests {
+    use std::{fs::read_to_string, path::Path};
+
     use super::*;
     use crate::haffman::helpers::text_to_bin;
 
@@ -143,5 +145,19 @@ mod tests {
                 "Compressed message with alphabet is not consistent"
             );
         }
+    }
+
+    #[test]
+    pub fn compression_is_correct_for_test_data() {
+        let input = read_to_string(Path::new("test_data/text.txt"))
+            .expect("Something went wrong reading the file");
+
+        let result = HaffmanCompression::new().compress(&input);
+        let encoded = result.get_with_injected_alphabet();
+
+        let output = read_to_string(Path::new("test_data/output.txt"))
+            .expect("Something went wrong reading the file");
+
+        assert_eq!(encoded, output);
     }
 }
