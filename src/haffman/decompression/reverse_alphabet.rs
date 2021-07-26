@@ -1,13 +1,9 @@
-use super::super::helpers::char_to_bin;
-use super::super::helpers::num_to_bin;
-use super::super::helpers::pad;
 use crate::haffman::alphabet::Alphabet;
 use crate::haffman::helpers::bin_to_char;
 use crate::haffman::helpers::MAX_ALPHABET_LENGTH_DIGITS;
 use crate::haffman::helpers::MAX_CHAR_LENGTH_DIGITS;
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter, Result};
-use std::iter::FromIterator;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct ReverseAlphabet(HashMap<String, char>);

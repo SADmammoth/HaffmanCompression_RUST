@@ -11,6 +11,7 @@ pub struct HaffmanDecompression {
 
 pub struct DecompressionResult {
     message: String,
+    decoded: String,
     alphabet: Alphabet,
     // TODO Impl
 }
@@ -22,10 +23,11 @@ impl HaffmanDecompression {
 
     pub fn decompress(&self, encoded: &str) -> DecompressionResult {
         let (alphabet, message) = ReverseAlphabet::decode_from_binary(encoded.to_string());
-        decompress(&message, &alphabet);
+        let decoded = decompress(&message, &alphabet);
 
         DecompressionResult {
             message,
+            decoded,
             alphabet: alphabet.convert_to_alphabet(),
         }
     }
@@ -33,6 +35,8 @@ impl HaffmanDecompression {
 
 #[cfg(test)]
 mod tests {
+    use std::{fs::read_to_string, path::Path};
+
     use crate::haffman::{HaffmanCompression, HaffmanDecompression};
 
     #[test]
@@ -65,5 +69,19 @@ mod tests {
             decompression_result.message,
             compression_result.get_encoded()
         );
+    }
+
+    #[test]
+    pub fn decompression_is_correct_for_test_data() {
+        let encoded = read_to_string(Path::new("test_data/output.txt"))
+            .expect("Something went wrong reading the file");
+
+        let result = HaffmanDecompression::new().decompress(&encoded);
+        let decoded = result.decoded;
+
+        let original = read_to_string(Path::new("test_data/text.txt"))
+            .expect("Something went wrong reading the file");
+
+        assert_eq!(decoded, original);
     }
 }
