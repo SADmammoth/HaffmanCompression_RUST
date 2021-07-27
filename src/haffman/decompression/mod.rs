@@ -3,7 +3,6 @@ use std::time::Instant;
 use self::{
     analyze::{analyze, AnalyzeResult},
     decompression::decompress,
-    reverse_alphabet::ReverseAlphabet,
 };
 
 use super::alphabet::Alphabet;
@@ -11,10 +10,9 @@ use super::alphabet::Alphabet;
 mod analyze;
 mod decompression;
 mod init;
-mod reverse_alphabet;
 
 pub struct HaffmanDecompression {
-    alphabet: Option<ReverseAlphabet>,
+    alphabet: Option<Alphabet>,
 }
 
 pub struct DecompressionResult {
@@ -31,13 +29,13 @@ impl HaffmanDecompression {
 
     #[allow(dead_code)] // TEMP
     pub fn with_alphabet(&mut self, alphabet: Alphabet) -> &HaffmanDecompression {
-        self.alphabet = Some(ReverseAlphabet::from_alphabet(alphabet));
+        self.alphabet = Some(alphabet);
         self
     }
 
     pub fn decompress(&self, encoded: &str) -> DecompressionResult {
         let timer: Instant = Instant::now();
-        let alphabet_for_compression: ReverseAlphabet;
+        let alphabet_for_compression: Alphabet;
         let message: String;
 
         match &self.alphabet {
@@ -46,8 +44,7 @@ impl HaffmanDecompression {
                 message = encoded.to_string();
             }
             None => {
-                let (alphabet, encoded_message) =
-                    ReverseAlphabet::decode_from_binary(encoded.to_string());
+                let (alphabet, encoded_message) = Alphabet::decode_from_binary(encoded.to_string());
                 message = encoded_message;
                 alphabet_for_compression = alphabet;
             }
@@ -60,7 +57,7 @@ impl HaffmanDecompression {
         DecompressionResult {
             message,
             decoded,
-            alphabet: alphabet_for_compression.convert_to_alphabet(),
+            alphabet: alphabet_for_compression,
             decompression_time,
         }
     }

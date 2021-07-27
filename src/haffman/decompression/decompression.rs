@@ -1,6 +1,8 @@
-use super::{init::build_tree, reverse_alphabet::ReverseAlphabet};
+use crate::haffman::alphabet::Alphabet;
 
-pub fn decompress(encoded: &str, alphabet: &ReverseAlphabet) -> String {
+use super::init::build_tree;
+
+pub fn decompress(encoded: &str, alphabet: &Alphabet) -> String {
     let mut decoded = String::new();
     let root = build_tree(alphabet);
     let mut curr_tree_node = &root;

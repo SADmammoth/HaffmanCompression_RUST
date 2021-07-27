@@ -1,6 +1,7 @@
 use super::super::helpers::char_to_bin;
 use super::super::helpers::num_to_bin;
 use super::super::helpers::pad;
+use crate::haffman::helpers::bin_to_char;
 use crate::haffman::helpers::MAX_ALPHABET_LENGTH_DIGITS;
 use crate::haffman::helpers::MAX_CHAR_LENGTH_DIGITS;
 use std::collections::HashMap;
@@ -26,6 +27,35 @@ impl Alphabet {
         } else {
             Alphabet(map)
         }
+    }
+
+    pub fn decode_from_binary(mut binary: String) -> (Alphabet, String) {
+        let alphabet_length_raw: String = binary.drain(0..MAX_ALPHABET_LENGTH_DIGITS).collect();
+        let max_char_length_raw: String = binary.drain(0..MAX_CHAR_LENGTH_DIGITS).collect();
+        let max_code_length_raw: String = binary
+            .drain(0..alphabet_length_raw.trim_start_matches("0").len())
+            .collect();
+
+        let alphabet_length: usize = usize::from_str_radix(&alphabet_length_raw, 2).unwrap();
+        let max_char_length: usize = usize::from_str_radix(&max_char_length_raw, 2).unwrap();
+        let max_code_length: usize = usize::from_str_radix(&max_code_length_raw, 2).unwrap();
+
+        let mut map = HashMap::<char, String>::new();
+
+        let mut character: char;
+        let mut code: String;
+
+        for _ in 0..alphabet_length {
+            character = bin_to_char(&binary.drain(0..max_char_length).collect::<String>());
+
+            code = binary.drain(0..max_code_length).collect();
+            code = code.trim_start_matches("0").to_string();
+            code = code.drain(1..).collect();
+
+            map.insert(character, code);
+        }
+
+        (Alphabet(map), binary)
     }
 
     pub fn get_map(&self) -> &HashMap<char, String> {

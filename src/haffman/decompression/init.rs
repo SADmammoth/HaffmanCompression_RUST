@@ -1,11 +1,9 @@
-use crate::haffman::tree::Tree;
+use crate::haffman::{alphabet::Alphabet, tree::Tree};
 
-use super::reverse_alphabet::ReverseAlphabet;
-
-pub fn build_tree(alphabet: &ReverseAlphabet) -> Tree<char> {
+pub fn build_tree(alphabet: &Alphabet) -> Tree<char> {
     let mut root = Tree::new_node(Tree::None, Tree::None);
     let mut curr: &mut Tree<char>;
-    for (code, symbol) in alphabet.get_map() {
+    for (symbol, code) in alphabet.get_map() {
         curr = &mut root;
         for direction in code.chars().take(code.len() - 1) {
             match direction {
@@ -28,20 +26,6 @@ pub fn build_tree(alphabet: &ReverseAlphabet) -> Tree<char> {
     root
 }
 
-// fn find_char(alphabet: &ReverseAlphabet, code: &str) -> Option<char> {
-//     let mut candidates = alphabet.get_map().clone();
-//     candidates.retain(|key, _| key.starts_with(&code));
-
-//     if candidates.len() == 1 {
-//         match candidates.values().last() {
-//             Some(val) => Some(*val),
-//             None => None,
-//         }
-//     } else {
-//         None
-//     }
-// }
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -53,8 +37,7 @@ mod tests {
         let query = create_priority_queue(message);
         let tree = create_tree(query);
         let compressed = HaffmanCompression::new().compress(message);
-        let (alphabet, _) =
-            ReverseAlphabet::decode_from_binary(compressed.get_with_injected_alphabet());
+        let (alphabet, _) = Alphabet::decode_from_binary(compressed.get_with_injected_alphabet());
 
         let recreated_tree = build_tree(&alphabet);
 
@@ -68,8 +51,7 @@ mod tests {
     pub fn tree_recreation_is_consistent() {
         let message = "Haffman compression";
         let compressed = HaffmanCompression::new().compress(message);
-        let (alphabet, _) =
-            ReverseAlphabet::decode_from_binary(compressed.get_with_injected_alphabet());
+        let (alphabet, _) = Alphabet::decode_from_binary(compressed.get_with_injected_alphabet());
 
         let recreated_tree = build_tree(&alphabet);
 
