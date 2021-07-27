@@ -13,4 +13,6 @@ fn main() {
         haffman::HaffmanDecompression::new().decompress(&encoded.get_with_injected_alphabet());
 
     println!("{}", decoded.analyze());
+
+    io_adapter::write(decoded.get_decoded()).unwrap();
 }
