@@ -89,6 +89,9 @@ impl<'a> CompressionResult<'a> {
 }
 
 #[cfg(test)]
+pub use init::*;
+
+#[cfg(test)]
 mod tests {
     use std::{fs::read_to_string, path::Path};
 

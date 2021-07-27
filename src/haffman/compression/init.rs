@@ -5,7 +5,7 @@ use super::query::Query;
 use std::collections::BinaryHeap;
 use std::collections::HashMap;
 
-fn create_priority_queue(text: &str) -> Query<char> {
+pub fn create_priority_queue(text: &str) -> Query<char> {
     let mut map = HashMap::new();
 
     for word in text.chars() {
@@ -25,7 +25,7 @@ fn create_priority_queue(text: &str) -> Query<char> {
     Query(query)
 }
 
-fn create_tree(query: Query<char>) -> Tree<char> {
+pub fn create_tree(query: Query<char>) -> Tree<char> {
     let mut query: BinaryHeap<Tree<char>> = query.0;
     let mut should_pick_right = true;
     let mut right: Tree<char> = Tree::None;
