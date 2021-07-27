@@ -10,6 +10,7 @@ use super::alphabet::Alphabet;
 
 mod analyze;
 mod decompression;
+mod init;
 mod reverse_alphabet;
 
 pub struct HaffmanDecompression {
