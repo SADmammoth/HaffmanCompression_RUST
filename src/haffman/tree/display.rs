@@ -10,6 +10,7 @@ impl<T: Display> Tree<T> {
         Tree::stringify_recursion(&mut string, self, 0, "").clone()
     }
 
+    #[allow(dead_code)] //TEMP
     pub fn stringify_ignore_priority(&self) -> String {
         let mut string = String::new();
 

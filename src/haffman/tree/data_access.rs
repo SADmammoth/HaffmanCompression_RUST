@@ -30,6 +30,7 @@ impl<T: Copy> Tree<T> {
         }
     }
 
+    #[allow(dead_code)] //TEMP
     pub fn set_content(&mut self, content: T) {
         match self {
             Tree::Leaf(leaf) => leaf.content = content,
@@ -45,6 +46,7 @@ impl<T: Copy> Tree<T> {
         }
     }
 
+    #[allow(dead_code)] //TEMP
     pub fn set_left(&mut self, left: Tree<T>) {
         if let Tree::Node(node) = self {
             node.left = left;
@@ -53,6 +55,7 @@ impl<T: Copy> Tree<T> {
         }
     }
 
+    #[allow(dead_code)] //TEMP
     pub fn set_right(&mut self, right: Tree<T>) {
         if let Tree::Node(node) = self {
             node.right = right;

@@ -41,6 +41,7 @@ impl ReverseAlphabet {
         &self.0
     }
 
+    #[allow(dead_code)] //TEMP
     pub fn len(&self) -> usize {
         self.get_map().len()
     }
