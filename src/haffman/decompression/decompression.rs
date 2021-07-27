@@ -9,7 +9,7 @@ pub fn decompress(encoded: &str, alphabet: &ReverseAlphabet) -> String {
 
     for symbol in encoded.chars() {
         if curr_tree_node.is_leaf() {
-            decoded.push(*curr_tree_node.get_content().unwrap());
+            decoded.push(curr_tree_node.get_content().unwrap());
         } else {
             curr_tree_node = match symbol {
                 '0' => curr_tree_node.get_child(ChildPosition::Left),

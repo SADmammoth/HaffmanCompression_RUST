@@ -60,4 +60,58 @@ impl<T: Copy> Tree<T> {
             panic!("Unable to set left")
         }
     }
+
+    pub fn get_or_create_left(&mut self) -> &mut Tree<T> {
+        match self {
+            Tree::Node(node) => match &node.left {
+                Tree::Node(_) => &mut node.left,
+                Tree::None => {
+                    node.left = Tree::new_node(Tree::None, Tree::None);
+                    &mut node.left
+                }
+                Tree::Leaf(_) => {
+                    panic!("Error")
+                }
+            },
+            _ => {
+                panic!("Error")
+            }
+        }
+    }
+
+    pub fn get_or_create_right(&mut self) -> &mut Tree<T> {
+        match self {
+            Tree::Node(node) => match &node.right {
+                Tree::Node(_) => &mut node.right,
+                Tree::None => {
+                    node.right = Tree::new_node(Tree::None, Tree::None);
+                    &mut node.right
+                }
+                Tree::Leaf(_) => {
+                    panic!("Error")
+                }
+            },
+            _ => {
+                panic!("Error")
+            }
+        }
+    }
+
+    pub fn create_left_leaf(&mut self, content: T, priority: u128) {
+        match self {
+            Tree::Node(node) => node.left = Tree::new_leaf(content, priority),
+            _ => {
+                panic!("Error")
+            }
+        }
+    }
+
+    pub fn create_right_leaf(&mut self, content: T, priority: u128) {
+        match self {
+            Tree::Node(node) => node.right = Tree::new_leaf(content, priority),
+            _ => {
+                panic!("Error")
+            }
+        }
+    }
 }

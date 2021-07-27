@@ -40,24 +40,6 @@ impl<T: Clone + Eq + std::hash::Hash + Copy> Tree<T> {
         }
     }
 
-    pub fn get_and_create(&mut self, position: ChildPosition) -> Tree<T> {
-        match self {
-            Tree::Node(self_node) => match position {
-                ChildPosition::Left => {
-                    self_node.left = Tree::match_subtree(&self_node.left, true);
-                    self_node.left.clone()
-                }
-                ChildPosition::Right => {
-                    self_node.right = Tree::match_subtree(&self_node.right, true);
-                    self_node.right.clone()
-                }
-            },
-            _ => {
-                panic!("Paths are applicable only for nodes")
-            }
-        }
-    }
-
     fn match_subtree(node: &Tree<T>, create_new_on_none: bool) -> Tree<T> {
         match node {
             Tree::None => {

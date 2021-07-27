@@ -1,21 +1,28 @@
-use crate::haffman::tree::{ChildPosition, Tree};
+use crate::haffman::tree::Tree;
 
 use super::reverse_alphabet::ReverseAlphabet;
 
-pub fn build_tree(alphabet: &ReverseAlphabet) -> Tree<&char> {
-    let root = Tree::new_node(Tree::None, Tree::None);
-    let mut curr = root.clone();
+pub fn build_tree(alphabet: &ReverseAlphabet) -> Tree<char> {
+    let mut root = Tree::new_node(Tree::None, Tree::None);
+    let mut curr: &mut Tree<char>;
     for (code, symbol) in alphabet.get_map() {
-        for direction in code.chars() {
+        curr = &mut root;
+        for direction in code.chars().take(code.len() - 1) {
             match direction {
-                '0' => curr = curr.get_and_create(ChildPosition::Left),
-                '1' => curr = curr.get_and_create(ChildPosition::Right),
+                '0' => curr = curr.get_or_create_left(),
+                '1' => curr = curr.get_or_create_right(),
                 _ => {
                     panic!("Alphabet is damaged or has incorrect format")
                 }
             }
         }
-        curr.set_content(symbol);
+        match code.chars().last().unwrap() {
+            '0' => curr.create_left_leaf(symbol.clone(), 0),
+            '1' => curr.create_right_leaf(symbol.clone(), 0),
+            _ => {
+                panic!("Alphabet is damaged or has incorrect format")
+            }
+        }
     }
 
     root
@@ -51,6 +58,9 @@ mod tests {
 
         let recreated_tree = build_tree(&alphabet);
 
-        assert_eq!(tree.to_string(), recreated_tree.to_string());
+        assert_eq!(
+            tree.stringify_ignore_priority(),
+            recreated_tree.stringify_ignore_priority()
+        );
     }
 }

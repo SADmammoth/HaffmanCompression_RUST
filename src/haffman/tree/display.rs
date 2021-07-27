@@ -10,6 +10,12 @@ impl<T: Display> Tree<T> {
         Tree::stringify_recursion(&mut string, self, 0, "").clone()
     }
 
+    pub fn stringify_ignore_priority(&self) -> String {
+        let mut string = String::new();
+
+        Tree::stringify_recursion_ignore_priority(&mut string, self, 0, "").clone()
+    }
+
     fn stringify_recursion<'a>(
         string: &'a mut String,
         root: &Tree<T>,
@@ -32,6 +38,28 @@ impl<T: Display> Tree<T> {
                     item = format!("{}{}", add, leaf.priority),
                     indent = indent
                 ));
+                string.push_str(&format!("({})\n", leaf.content));
+            }
+            Tree::None => {}
+        };
+
+        string
+    }
+
+    fn stringify_recursion_ignore_priority<'a>(
+        string: &'a mut String,
+        root: &Tree<T>,
+        indent: usize,
+        add: &str,
+    ) -> &'a String {
+        match root {
+            Tree::Node(node) => {
+                string.push_str(&format!("{item:>indent$}\n", item = add, indent = indent));
+                Tree::stringify_recursion_ignore_priority(string, &node.right, indent + 6, "r: ");
+                Tree::stringify_recursion_ignore_priority(string, &node.left, indent + 6, "l: ");
+            }
+            Tree::Leaf(leaf) => {
+                string.push_str(&format!("{item:>indent$}", item = add, indent = indent));
                 string.push_str(&format!("({})\n", leaf.content));
             }
             Tree::None => {}
