@@ -3,22 +3,14 @@ mod analyze;
 mod compression;
 mod init;
 mod query;
+mod result;
 use std::time::Instant;
 
 use alphabet::Alphabet;
-use analyze::{analyze, AnalyzeResult};
 use compression::compress;
 
 pub struct HaffmanCompression {
     alphabet: Option<Alphabet>,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone)]
-pub struct CompressionResult<'a> {
-    message: &'a str,
-    encoded: String,
-    alphabet: Alphabet,
-    compression_time: u128,
 }
 
 impl HaffmanCompression {
@@ -54,42 +46,14 @@ impl HaffmanCompression {
 
         let compression_time = timer.elapsed().as_millis();
 
-        CompressionResult {
-            message,
-            encoded,
-            alphabet: alphabet_for_compression,
-            compression_time,
-        }
-    }
-}
-
-impl<'a> CompressionResult<'a> {
-    pub fn get_with_injected_alphabet(&self) -> String {
-        format!("{}{}", self.alphabet.encode_info(), self.encoded)
-    }
-
-    #[allow(dead_code)] // TEMP
-    pub fn get_encoded(&self) -> &str {
-        &self.encoded
-    }
-
-    #[allow(dead_code)] // TEMP
-    pub fn get_alphabet(&self) -> &Alphabet {
-        &self.alphabet
-    }
-
-    pub fn analyze(&self) -> AnalyzeResult {
-        analyze(
-            self.message,
-            &self.encoded,
-            &self.alphabet,
-            self.compression_time,
-        )
+        CompressionResult::new(message, encoded, alphabet_for_compression, compression_time)
     }
 }
 
 #[cfg(test)]
 pub use init::*;
+
+use self::result::CompressionResult;
 
 #[cfg(test)]
 mod tests {
@@ -111,13 +75,13 @@ mod tests {
     pub fn message_is_compressed() {
         let result = compress();
         // Message is changed
-        assert_ne!(result.message, result.encoded);
+        assert_ne!(result.get_message(), result.get_encoded());
         // Message binary is changed
-        assert_ne!(text_to_bin(result.message), result.get_encoded());
+        assert_ne!(text_to_bin(result.get_message()), result.get_encoded());
         // Message size is reduced
-        assert!(text_to_bin(result.message).len() > result.get_encoded().len());
+        assert!(text_to_bin(result.get_message()).len() > result.get_encoded().len());
         // Alphabet size is less than message length
-        assert!(text_to_bin(result.message).len() > result.get_alphabet().len());
+        assert!(text_to_bin(result.get_message()).len() > result.get_alphabet().len());
         // Compressed message with alphabet meust be larger than compressed message
         assert!(result.get_with_injected_alphabet().len() > result.get_encoded().len());
     }

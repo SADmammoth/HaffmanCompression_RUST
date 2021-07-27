@@ -1,25 +1,18 @@
 use std::time::Instant;
 
-use self::{
-    analyze::{analyze, AnalyzeResult},
-    decompression::decompress,
-};
+use self::decompression::decompress;
 
 use super::alphabet::Alphabet;
 
 mod analyze;
 mod decompression;
 mod init;
+mod result;
+
+pub use result::DecompressionResult;
 
 pub struct HaffmanDecompression {
     alphabet: Option<Alphabet>,
-}
-
-pub struct DecompressionResult {
-    message: String,
-    decoded: String,
-    alphabet: Alphabet,
-    decompression_time: u128,
 }
 
 impl HaffmanDecompression {
@@ -54,33 +47,12 @@ impl HaffmanDecompression {
 
         let decompression_time = timer.elapsed().as_millis();
 
-        DecompressionResult {
+        DecompressionResult::new(
             message,
             decoded,
-            alphabet: alphabet_for_compression,
+            alphabet_for_compression,
             decompression_time,
-        }
-    }
-}
-
-impl DecompressionResult {
-    #[allow(dead_code)] // TEMP
-    pub fn get_decoded(&self) -> String {
-        self.decoded.clone()
-    }
-
-    #[allow(dead_code)] // TEMP
-    pub fn get_encoded_message(&self) -> String {
-        self.message.clone()
-    }
-
-    #[allow(dead_code)] // TEMP
-    pub fn get_alphabet(&self) -> &Alphabet {
-        &self.alphabet
-    }
-
-    pub fn analyze(&self) -> AnalyzeResult {
-        analyze(self.decompression_time)
+        )
     }
 }
 
@@ -99,12 +71,12 @@ mod tests {
 
         println!(
             "{}\n{}",
-            decompression_result.alphabet.to_string(),
+            decompression_result.get_alphabet().to_string(),
             compression_result.get_alphabet().to_string()
         );
 
         assert_eq!(
-            decompression_result.alphabet.to_string(),
+            decompression_result.get_alphabet().to_string(),
             compression_result.get_alphabet().to_string()
         );
     }
@@ -117,7 +89,7 @@ mod tests {
             .decompress(&compression_result.get_with_injected_alphabet());
 
         assert_eq!(
-            decompression_result.message,
+            decompression_result.get_encoded_message(),
             compression_result.get_encoded()
         );
     }
@@ -128,7 +100,7 @@ mod tests {
             .expect("Something went wrong reading the file");
 
         let result = HaffmanDecompression::new().decompress(&encoded);
-        let decoded = result.decoded;
+        let decoded = result.get_decoded();
 
         let original = read_to_string(Path::new("test_data/text.txt"))
             .expect("Something went wrong reading the file");
