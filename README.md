@@ -11,7 +11,7 @@ Huffman compression GUI-app [(repo)](https://github.com/SADmammoth/HaffmanCompre
 
 ## Performance comparision to [previous version](https://github.com/SADmammoth/HaffmanCompression/tree/master)
 
-> - Results of all presented test are approximate and can't be used for pecisious analysis.
+> - Results of all presented tests are approximate and can't be used for pecisious analysis.
 > - Execution time on different machines may differ. Both programs were run on local environment of the same machine.
 > - Presented execution time is calculated by embeded features of a language and do not include time for visualization, logging, data output and so on.
 > - Rust program has updated version of algorithm that makes it more consistent and effective.
