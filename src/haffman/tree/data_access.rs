@@ -114,4 +114,22 @@ impl<T: Copy> Tree<T> {
             }
         }
     }
+
+    pub fn get_left(&self) -> &Tree<T> {
+        match self {
+            Tree::Node(node) => &node.left,
+            _ => {
+                panic!("Bad path, unable to get child at position")
+            }
+        }
+    }
+
+    pub fn get_right(&self) -> &Tree<T> {
+        match self {
+            Tree::Node(node) => &node.right,
+            _ => {
+                panic!("Bad path, unable to get child at position")
+            }
+        }
+    }
 }

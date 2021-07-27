@@ -63,4 +63,21 @@ mod tests {
             recreated_tree.stringify_ignore_priority()
         );
     }
+
+    #[test]
+    pub fn tree_recreation_is_consistent() {
+        let message = "Haffman compression";
+        let compressed = HaffmanCompression::new().compress(message);
+        let (alphabet, _) =
+            ReverseAlphabet::decode_from_binary(compressed.get_with_injected_alphabet());
+
+        let recreated_tree = build_tree(&alphabet);
+
+        for _ in 0..1000 {
+            assert_eq!(
+                recreated_tree.stringify_ignore_priority(),
+                build_tree(&alphabet).stringify_ignore_priority()
+            );
+        }
+    }
 }
