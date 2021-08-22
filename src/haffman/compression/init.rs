@@ -27,27 +27,15 @@ pub fn create_priority_queue(text: &str) -> Query<char> {
 
 pub fn create_tree(query: Query<char>) -> Tree<char> {
     let mut query: BinaryHeap<Tree<char>> = query.0;
-    let mut should_pick_right = true;
-    let mut right: Tree<char> = Tree::None;
+    let mut right: Tree<char>;
     let mut left: Tree<char>;
     loop {
-        if query.len() == 1 {
+        if query.len() < 2 {
             break;
         }
-
-        if should_pick_right {
-            right = query.pop().unwrap();
-            if query.len() == 1 {
-                left = query.pop().unwrap();
-                query.push(Tree::new_node(Box::new(left), Box::new(right)));
-                break;
-            }
-            should_pick_right = false;
-        } else {
-            left = query.pop().unwrap();
-            query.push(Tree::new_node(Box::new(left), Box::new(right.clone())));
-            should_pick_right = true;
-        }
+        left = query.pop().unwrap_or(Tree::None);
+        right = query.pop().unwrap_or(Tree::None);
+        query.push(Tree::new_node(Box::new(left), Box::new(right)));
     }
 
     query.pop().unwrap()
