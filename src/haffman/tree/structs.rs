@@ -2,8 +2,8 @@ use std::cmp::Ordering;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct TreeNode<T> {
-    pub left: Tree<T>,
-    pub right: Tree<T>,
+    pub left: Box<Tree<T>>,
+    pub right: Box<Tree<T>>,
     pub priority: u128,
 }
 
@@ -15,8 +15,8 @@ pub struct TreeLeaf<T> {
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum Tree<T> {
-    Node(Box<TreeNode<T>>),
-    Leaf(Box<TreeLeaf<T>>),
+    Node(TreeNode<T>),
+    Leaf(TreeLeaf<T>),
     None,
 }
 

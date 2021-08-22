@@ -15,7 +15,7 @@ pub fn create_priority_queue(text: &str) -> Query<char> {
 
     let mut query = BinaryHeap::<Tree<char>>::with_capacity(map.len());
 
-    let mut sorted_map = map.clone().into_iter().collect::<Vec<_>>();
+    let mut sorted_map = map.into_iter().collect::<Vec<_>>();
     sorted_map.sort_by(|(a_key, _), (b_key, _)| a_key.cmp(&b_key));
 
     for (symbol, count) in sorted_map {
@@ -39,13 +39,13 @@ pub fn create_tree(query: Query<char>) -> Tree<char> {
             right = query.pop().unwrap();
             if query.len() == 1 {
                 left = query.pop().unwrap();
-                query.push(Tree::new_node(left, right.clone()));
+                query.push(Tree::new_node(Box::new(left), Box::new(right)));
                 break;
             }
             should_pick_right = false;
         } else {
             left = query.pop().unwrap();
-            query.push(Tree::new_node(left, right.clone()));
+            query.push(Tree::new_node(Box::new(left), Box::new(right.clone())));
             should_pick_right = true;
         }
     }

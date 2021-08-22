@@ -1,17 +1,17 @@
 use super::structs::*;
 
 impl<T: Copy> Tree<T> {
-    pub fn new_node(left: Tree<T>, right: Tree<T>) -> Tree<T> {
+    pub fn new_node(left: Box<Tree<T>>, right: Box<Tree<T>>) -> Tree<T> {
         let priority = left.get_priority() + right.get_priority();
-        Tree::Node(Box::new(TreeNode {
+        Tree::Node(TreeNode {
             left,
             right,
             priority,
-        }))
+        })
     }
 
     pub fn new_leaf(content: T, priority: u128) -> Tree<T> {
-        Tree::Leaf(Box::new(TreeLeaf { content, priority }))
+        Tree::Leaf(TreeLeaf { content, priority })
     }
 
     pub fn get_priority(&self) -> u128 {
@@ -47,7 +47,7 @@ impl<T: Copy> Tree<T> {
     }
 
     #[allow(dead_code)] //TEMP
-    pub fn set_left(&mut self, left: Tree<T>) {
+    pub fn set_left(&mut self, left: Box<Tree<T>>) {
         if let Tree::Node(node) = self {
             node.left = left;
         } else {
@@ -56,7 +56,7 @@ impl<T: Copy> Tree<T> {
     }
 
     #[allow(dead_code)] //TEMP
-    pub fn set_right(&mut self, right: Tree<T>) {
+    pub fn set_right(&mut self, right: Box<Tree<T>>) {
         if let Tree::Node(node) = self {
             node.right = right;
         } else {
@@ -66,10 +66,11 @@ impl<T: Copy> Tree<T> {
 
     pub fn get_or_create_left(&mut self) -> &mut Tree<T> {
         match self {
-            Tree::Node(node) => match &node.left {
-                Tree::Node(_) => &mut node.left,
+            Tree::Node(node) => match node.left.as_ref() {
+                Tree::Node(_) => node.left.as_mut(),
                 Tree::None => {
-                    node.left = Tree::new_node(Tree::None, Tree::None);
+                    node.left =
+                        Box::new(Tree::new_node(Box::new(Tree::None), Box::new(Tree::None)));
                     &mut node.left
                 }
                 Tree::Leaf(_) => {
@@ -84,10 +85,11 @@ impl<T: Copy> Tree<T> {
 
     pub fn get_or_create_right(&mut self) -> &mut Tree<T> {
         match self {
-            Tree::Node(node) => match &node.right {
-                Tree::Node(_) => &mut node.right,
+            Tree::Node(node) => match node.right.as_ref() {
+                Tree::Node(_) => node.right.as_mut(),
                 Tree::None => {
-                    node.right = Tree::new_node(Tree::None, Tree::None);
+                    node.right =
+                        Box::new(Tree::new_node(Box::new(Tree::None), Box::new(Tree::None)));
                     &mut node.right
                 }
                 Tree::Leaf(_) => {
@@ -102,7 +104,7 @@ impl<T: Copy> Tree<T> {
 
     pub fn create_left_leaf(&mut self, content: T, priority: u128) {
         match self {
-            Tree::Node(node) => node.left = Tree::new_leaf(content, priority),
+            Tree::Node(node) => node.left = Box::new(Tree::new_leaf(content, priority)),
             _ => {
                 panic!("Error")
             }
@@ -111,7 +113,7 @@ impl<T: Copy> Tree<T> {
 
     pub fn create_right_leaf(&mut self, content: T, priority: u128) {
         match self {
-            Tree::Node(node) => node.right = Tree::new_leaf(content, priority),
+            Tree::Node(node) => node.right = Box::new(Tree::new_leaf(content, priority)),
             _ => {
                 panic!("Error")
             }

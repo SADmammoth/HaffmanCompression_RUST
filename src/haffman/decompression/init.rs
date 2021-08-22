@@ -1,9 +1,9 @@
 use crate::haffman::{alphabet::Alphabet, tree::Tree};
 
 pub fn build_tree(alphabet: &Alphabet) -> Tree<char> {
-    let mut root = Tree::new_node(Tree::None, Tree::None);
+    let mut root = Tree::new_node(Box::new(Tree::None), Box::new(Tree::None));
     let mut curr: &mut Tree<char>;
-    for (symbol, code) in alphabet.get_map() {
+    for (symbol, code) in alphabet.get_map().iter() {
         curr = &mut root;
         for direction in code.chars().take(code.len() - 1) {
             match direction {
@@ -15,8 +15,8 @@ pub fn build_tree(alphabet: &Alphabet) -> Tree<char> {
             }
         }
         match code.chars().last().unwrap() {
-            '0' => curr.create_left_leaf(symbol.clone(), 0),
-            '1' => curr.create_right_leaf(symbol.clone(), 0),
+            '0' => curr.create_left_leaf(*symbol, 0),
+            '1' => curr.create_right_leaf(*symbol, 0),
             _ => {
                 panic!("Alphabet is damaged or has incorrect format")
             }
